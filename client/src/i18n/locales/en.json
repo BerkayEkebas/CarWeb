@@ -1,0 +1,40 @@
+{
+  "nav": {
+    "home": "Home",
+    "auction": "Auction",
+    "stock": "Stock",
+    "inspected": "Inspected",
+    "agencies": "Agencies"
+  },
+  "search": "Search",
+  "domesticMarket": "Domestic Market",
+  "dealerPrice": "Dealer Price",
+  "askBranchManager": "Ask Branch/Manager",
+  "results": "results",
+  "sortBy": "Sort by",
+  "year": "Year",
+  "km": "km",
+  "automatic": "Automatic",
+  "manual": "Manual",
+  "diesel": "Diesel",
+  "gasoline": "Gasoline",
+  "findAgency": "Find Agency in country",
+  "certifiedProfessional": "They are all certified professional",
+  "admin": {
+    "title": "Admin Panel",
+    "addCar": "Add New Car",
+    "editCar": "Edit Car",
+    "carList": "Car List",
+    "brand": "Brand",
+    "model": "Model",
+    "price": "Price",
+    "mileage": "Mileage",
+    "transmission": "Transmission",
+    "fuelType": "Fuel Type",
+    "images": "Images",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit"
+  }
+}

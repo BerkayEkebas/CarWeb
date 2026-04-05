@@ -1,0 +1,40 @@
+{
+  "nav": {
+    "home": "홈",
+    "auction": "경매",
+    "stock": "재고",
+    "inspected": "검사완료",
+    "agencies": "대리점"
+  },
+  "search": "검색",
+  "domesticMarket": "국내 시장",
+  "dealerPrice": "딜러 가격",
+  "askBranchManager": "지점/매니저에게 문의",
+  "results": "결과",
+  "sortBy": "정렬",
+  "year": "년",
+  "km": "km",
+  "automatic": "자동",
+  "manual": "수동",
+  "diesel": "디젤",
+  "gasoline": "가솔린",
+  "findAgency": "국가별 대리점 찾기",
+  "certifiedProfessional": "모두 인증된 전문가입니다",
+  "admin": {
+    "title": "관리자 패널",
+    "addCar": "새 차량 추가",
+    "editCar": "차량 수정",
+    "carList": "차량 목록",
+    "brand": "브랜드",
+    "model": "모델",
+    "price": "가격",
+    "mileage": "주행거리",
+    "transmission": "변속기",
+    "fuelType": "연료 타입",
+    "images": "이미지",
+    "save": "저장",
+    "cancel": "취소",
+    "delete": "삭제",
+    "edit": "수정"
+  }
+}
