@@ -9,9 +9,9 @@ const { requireAuth } = require('../middleware/authMiddleware');
 router.get('/', async (req, res) => {
   try {
     const {
-      weekNo, fuel, transmission, color,
+      weekNo, fuel, transmission, color, maker, q,
       yearFrom, yearTo, priceFrom, priceTo, kmFrom, kmTo,
-      activeOnly = 'true',
+      activeOnly = 'true', sort = 'newest',
       page = 1, limit = 20,
     } = req.query;
 
@@ -23,6 +23,8 @@ router.get('/', async (req, res) => {
     if (fuel) { conditions.push('fuel = ?'); params.push(fuel); }
     if (transmission) { conditions.push('transmission = ?'); params.push(transmission); }
     if (color) { conditions.push('color = ?'); params.push(color); }
+    if (maker) { conditions.push('name LIKE ?'); params.push(`[${maker}]%`); }
+    if (q) { conditions.push('name LIKE ?'); params.push(`%${q}%`); }
     if (yearFrom) { conditions.push('year >= ?'); params.push(yearFrom); }
     if (yearTo) { conditions.push('year <= ?'); params.push(yearTo); }
     if (priceFrom) { conditions.push('price_usd >= ?'); params.push(priceFrom); }
@@ -30,12 +32,22 @@ router.get('/', async (req, res) => {
     if (kmFrom) { conditions.push('km >= ?'); params.push(kmFrom); }
     if (kmTo) { conditions.push('km <= ?'); params.push(kmTo); }
 
+    const SORTS = {
+      newest: 'week_no DESC, stock_no ASC',
+      price_asc: 'price_usd ASC',
+      price_desc: 'price_usd DESC',
+      year_desc: 'year DESC',
+      year_asc: 'year ASC',
+      km_asc: 'km ASC',
+    };
+    const orderBy = SORTS[sort] || SORTS.newest;
+
     const where = conditions.length ? `WHERE ${conditions.join(' AND ')}` : '';
     const limitVal = parseInt(limit);
     const offsetVal = (parseInt(page) - 1) * limitVal;
 
     const rows = await query(
-      `SELECT * FROM auctions ${where} ORDER BY week_no DESC, stock_no ASC LIMIT ${limitVal} OFFSET ${offsetVal}`,
+      `SELECT * FROM auctions ${where} ORDER BY ${orderBy} LIMIT ${limitVal} OFFSET ${offsetVal}`,
       params
     );
 
@@ -55,6 +67,44 @@ router.get('/weeks', async (req, res) => {
     const rows = await query('SELECT DISTINCT week_no FROM auctions ORDER BY week_no DESC');
     res.json(rows.map(r => r.week_no));
   } catch (err) {
+    res.status(500).json({ error: 'Database error' });
+  }
+});
+
+// GET /api/auctions/filters — dropdown'ları doldurmak için mevcut değerler
+router.get('/filters', async (req, res) => {
+  try {
+    const rows = await query(
+      'SELECT name, color, fuel, transmission, year, price_usd FROM auctions WHERE is_active = 1'
+    );
+
+    const makers = new Set();
+    const colors = new Set();
+    const fuels = new Set();
+    const transmissions = new Set();
+    let minYear = Infinity, maxYear = -Infinity;
+    let minPrice = Infinity, maxPrice = -Infinity;
+
+    rows.forEach(r => {
+      const m = r.name && r.name.match(/^\[([^\]]+)\]/);
+      if (m) makers.add(m[1].trim());
+      if (r.color) colors.add(r.color);
+      if (r.fuel) fuels.add(r.fuel);
+      if (r.transmission) transmissions.add(r.transmission);
+      if (r.year) { minYear = Math.min(minYear, r.year); maxYear = Math.max(maxYear, r.year); }
+      if (r.price_usd) { minPrice = Math.min(minPrice, r.price_usd); maxPrice = Math.max(maxPrice, r.price_usd); }
+    });
+
+    res.json({
+      makers: [...makers].sort(),
+      colors: [...colors].sort(),
+      fuels: [...fuels].sort(),
+      transmissions: [...transmissions].sort(),
+      yearRange: minYear === Infinity ? null : { min: minYear, max: maxYear },
+      priceRange: minPrice === Infinity ? null : { min: minPrice, max: maxPrice },
+    });
+  } catch (err) {
+    console.error(err);
     res.status(500).json({ error: 'Database error' });
   }
 });

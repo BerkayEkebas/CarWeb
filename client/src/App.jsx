@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Header from './components/Header';
 import Home from './pages/Home';
 import Auction from './pages/Auction';
+import CarDetail from './pages/CarDetail';
 import Agencies from './pages/Agencies';
 import Admin from './pages/Admin';
 import Login from './pages/Login';
@@ -17,6 +18,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/auction" element={<Auction />} />
+            <Route path="/auction/:id" element={<CarDetail />} />
             <Route path="/agencies" element={<Agencies />} />
             <Route path="/auth" element={<Login />} />
             <Route path="/admin" element={<ProtectedRoute><Admin /></ProtectedRoute>} />
